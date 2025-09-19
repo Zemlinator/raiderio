@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <title>Můj WoW profil</title>
+  <style>
+    body { font-family: Roboto, sans-serif; background:#8b8b8b; margin:0; }
+    header { background:#333; color:rgb(139, 139, 139); padding:10px; }
+    .wrap { display:flex; gap:10px; padding:10px; }
+    .sidebar { width:220px; background:#fff; padding:10px; border-radius:6px; }
+    .content { flex:1; background:#454b99; padding:12px; border-radius:6px; }
+    .char-item { padding:6px; border-bottom:1px solid #eee; cursor:pointer; }
+    .char-item:hover { background:#f9f9f9; }
+    .active { background:#e6f7ff; }
+    ul { padding-left:20px; }
+    li { margin:4px 0; }
+    .btn { margin:4px 4px 0 0; padding:5px 8px; border:1px solid #ccc; border-radius:4px; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <header>
+    <h2>Můj WoW profil (více postav)</h2>
+  </header>
+
+  <div class="wrap">
+    <aside class="sidebar">
+      <h3>Postavy</h3>
+      <div id="charList"></div>
+    </aside>
+
+    <main class="content">
+      <div id="profileArea">
+        <h3>Vyber postavu vlevo</h3>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // seznam postav
+    const characters = [
+      { region: 'eu', realm: 'drakthul', name: 'Zemlinator' },
+      { region: 'eu', realm: 'drakthul', name: 'Bilejkluk' },
+      { region: 'eu', realm: 'drakthul', name: 'Zemligomedov' },
+      { region: 'eu', realm: 'drakthul', name: 'Zzemla' }
+    ];
+
+    const charListEl = document.getElementById('charList');
+    const profileArea = document.getElementById('profileArea');
+    let activeIndex = null;
+
+    function renderCharList() {
+      charListEl.innerHTML = '';
+      characters.forEach((c, i) => {
+        const div = document.createElement('div');
+        div.className = 'char-item' + (i===activeIndex ? ' active' : '');
+        div.textContent = c.name + ' (' + c.realm + ')';
+        div.onclick = () => loadCharacter(i);
+        charListEl.appendChild(div);
+      });
+    }
+
+    async function loadCharacter(index) {
+      activeIndex = index;
+      renderCharList();
+      const ch = characters[index];
+      const url = `https://raider.io/api/v1/characters/profile?region=${encodeURIComponent(ch.region)}&realm=${encodeURIComponent(ch.realm)}&name=${encodeURIComponent(ch.name)}&fields=gear,mythic_plus_scores,raid_progression`;
+
+    }
+
+    // spustit seznam při načtení
+    renderCharList();
+  </script>
+</body>
+</html>
